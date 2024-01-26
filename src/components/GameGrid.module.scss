@@ -1,0 +1,37 @@
+.grid {
+  display: grid;
+  max-width: 400px;
+  grid-template-columns: repeat(8, 1fr);
+  
+  button {
+    border: solid 5px transparent;
+    border-radius: 0;
+    background-color: rgb(246, 246, 246);
+    transition: border-color 80ms;
+    aspect-ratio: 1;
+
+    &:nth-child(16n + 2),
+    &:nth-child(16n + 4),
+    &:nth-child(16n + 6),
+    &:nth-child(16n + 8),
+    &:nth-child(16n + 9),
+    &:nth-child(16n + 11),
+    &:nth-child(16n + 13),
+    &:nth-child(16n + 15) {
+      background-color: rgb(231, 231, 231);
+    }
+
+    &:hover, &:focus-visible {
+      border-color: rgb(118, 141, 241);
+    }
+
+    &:first-child {
+      background-color: rgb(142, 205, 142);
+    }
+
+    &.end {
+      background-color: rgb(215, 153, 196);
+    }
+  }
+
+}

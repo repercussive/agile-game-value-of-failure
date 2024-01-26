@@ -1,7 +1,10 @@
+import GameGrid from './components/GameGrid'
+
 function App() {
   return (
     <>
-      <h1>Hello world!</h1>
+      <h1>Agile Game WIP</h1>
+      <GameGrid />
     </>
   )
 }
