@@ -1,37 +1,14 @@
 .grid {
+  --cell-size: min(50px, calc(90vw / var(--grid-side-length)));
+  width: fit-content;
   display: grid;
-  max-width: 400px;
-  grid-template-columns: repeat(8, 1fr);
-  
-  button {
-    border: solid 5px transparent;
-    border-radius: 0;
-    background-color: rgb(246, 246, 246);
-    transition: border-color 80ms;
-    aspect-ratio: 1;
-
-    &:nth-child(16n + 2),
-    &:nth-child(16n + 4),
-    &:nth-child(16n + 6),
-    &:nth-child(16n + 8),
-    &:nth-child(16n + 9),
-    &:nth-child(16n + 11),
-    &:nth-child(16n + 13),
-    &:nth-child(16n + 15) {
-      background-color: rgb(231, 231, 231);
-    }
-
-    &:hover, &:focus-visible {
-      border-color: rgb(118, 141, 241);
-    }
-
-    &:first-child {
-      background-color: rgb(142, 205, 142);
-    }
-
-    &.end {
-      background-color: rgb(215, 153, 196);
-    }
-  }
-
+  grid-template-columns: repeat(var(--grid-side-length), var(--cell-size));
+  background-image:
+    linear-gradient(to right, rgba(245, 245, 245, 0.95), rgba(245, 245, 245, 0.95)),
+    linear-gradient(to right, black 50%, white 50%),
+    linear-gradient(to bottom, black 50%, white 50%);
+  background-blend-mode: normal, difference, normal;
+  background-size: calc(var(--cell-size) * 2) calc(var(--cell-size) * 2);
+  border-radius: calc(var(--cell-size) / 8);
+  overflow: hidden;
 }

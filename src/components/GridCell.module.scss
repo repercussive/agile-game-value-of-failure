@@ -1,0 +1,82 @@
+.cell {
+  --corner-radius: calc(var(--cell-size) / 8);
+  position: relative;
+  border: solid 4px transparent;
+  border-radius: 0;
+  background: none;
+  transition: border-color 80ms;
+  aspect-ratio: 1;
+
+  &:hover,
+  &:focus-visible {
+    border-color: rgb(118, 141, 241);
+  }
+
+  &:first-child {
+    background-color: rgb(142, 205, 142);
+  }
+
+  &:last-child {
+    background-color: rgb(215, 153, 196);
+  }
+
+  &::before, &::after {
+    --connector-thickness: 0px;
+    --connector-length: calc(var(--cell-size) + var(--connector-thickness));
+    --shift-amount: calc(50% - calc(var(--connector-thickness) / 2));
+    position: absolute;
+    content: '';
+    width: var(--connector-thickness);
+    height: var(--connector-thickness);
+    top: var(--shift-amount);
+    left: var(--shift-amount);
+    border-radius: 10rem;
+    background-color: rgb(62, 86, 139);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  &[data-is-in-path=true] {
+    &::before, &::after {
+      --connector-thickness: 5px;
+    }
+  }
+
+  &[data-is-end-point=true] {
+    &::after {
+      --connector-thickness: 12px;
+    }
+  }
+
+  // connects to cell above
+  &[data-connect-direction='0'] {
+    &::before {
+      height: var(--connector-length);
+      bottom: var(--shift-amount);
+      top: auto;
+    }
+  }
+
+  // connects to cell to the right
+  &[data-connect-direction='1'] {
+    &::before {
+      width: var(--connector-length);
+    }
+  }
+
+  // connects to cell below
+  &[data-connect-direction='2'] {
+    &::before {
+      height: var(--connector-length);
+    }
+  }
+
+  // connects to cell to the left
+  &[data-connect-direction='3'] {
+    &::before {
+      width: var(--connector-length);
+      right: var(--shift-amount);
+      left: auto;
+    }
+  }
+}
