@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx'
-import sample from 'lodash.sample'
+import randomSample from 'lodash.sample'
 import Path from './Path'
 
 export enum PathMatchResult {
@@ -9,46 +9,72 @@ export enum PathMatchResult {
   IncorrectConfiguration
 }
 
+export enum PathMatchMode {
+  Continuous,
+  Incremental
+}
+
 class PathMatcher {
+  public static maxIncrementSize = 3
   private targetPath: number[] = []
+  private matchMode = PathMatchMode.Continuous
   public recordedMistakeCells: number[] = []
   public recordedCorrectCells: number[] = []
-  public accuracy: number | undefined = undefined
 
   constructor() {
     makeAutoObservable(this)
   }
 
-  public registerShareCode(shareCode: string) {
-    this.targetPath = shareCode.split('-').map((value) => Number.parseInt(value))
-    console.log(this.targetPath)
+  public get pathMatchMode() { return this.matchMode }
+
+  public get hasTargetPath() {
+    return this.targetPath.length > 0
   }
 
-  public comparePathWithTarget(path: Path) {
-    const pathCells = path.pathCellIndexes
-    const isCorrect = this.targetPath.every((cellIndex, i) => cellIndex === pathCells[i])
+  public registerPathCode = (shareCode: string, mode: PathMatchMode) => {
+    this.targetPath = shareCode.split('-').map((value) => Number.parseInt(value))
+    this.matchMode = mode
+    this.recordedCorrectCells = []
+    this.recordedMistakeCells = []
+  }
+
+  public comparePathWithTarget = (actualPath: Path) => {
+    // Continuous mode - segment is the entire path
+    let targetSegmentStartIndex = 0
+    let targetSegment = this.targetPath
+    let actualSegment = actualPath.pathCellIndexes 
+
+    // Incremental mode - segment is max 3 cells
+    if (this.matchMode === PathMatchMode.Incremental) {
+      targetSegmentStartIndex = this.recordedCorrectCells.length
+      targetSegment = this.targetPath.slice(targetSegmentStartIndex, targetSegmentStartIndex + PathMatcher.maxIncrementSize)
+      actualSegment = actualPath.pathCellIndexes.slice(targetSegmentStartIndex, targetSegmentStartIndex + PathMatcher.maxIncrementSize)
+    } 
+
+    const isCorrect = targetSegment.every((cellIndex, i) => cellIndex === actualSegment[i])
+
     if (isCorrect) {
-      this.recordedCorrectCells = this.targetPath
+      targetSegment.forEach((cellIndex) => this.recordedCorrectCells.push(cellIndex))
       return PathMatchResult.Correct
     }
 
-    let allMistakeCells = pathCells.filter((cellIndex) => !this.targetPath.includes(cellIndex))
+    let allMistakeCells = actualPath.pathCellIndexes.filter((cellIndex) => !this.targetPath.includes(cellIndex))
     let newMistakeCells = allMistakeCells.filter((cellIndex) => !this.recordedMistakeCells.includes(cellIndex))
 
     if (newMistakeCells.length > 0) {
-      this.recordedMistakeCells.push(sample(allMistakeCells)!)
+      this.recordedMistakeCells.push(randomSample(allMistakeCells)!)
       return PathMatchResult.MistakeInPath
     } 
 
-    if (path.pathCellIndexes.length === this.targetPath.length) {
+    if (actualSegment.length === targetSegment.length) {
       return PathMatchResult.IncorrectConfiguration
     } 
 
     return PathMatchResult.MissedCell
   }
 
-  public hasTargetPath() {
-    return this.targetPath.length > 0
+  public getCurrentIncrementSize = (cellsInActualPath: number[]) => {
+    return cellsInActualPath.length - this.recordedCorrectCells.length
   }
 }
 

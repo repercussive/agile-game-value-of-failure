@@ -1,0 +1,16 @@
+.statusText {
+  animation: emphasise forwards 2s;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+@keyframes emphasise {
+  0%, 50% {
+    opacity: 1;
+    background-color: rgba(11, 182, 250, 0.411);
+  }
+  100% {
+    opacity: 0.6;
+    background-color: rgba(108, 201, 238, 0);
+  }
+}
