@@ -46,6 +46,10 @@ class PathMatcher {
 
     return PathMatchResult.MissedCell
   }
+
+  public hasTargetPath() {
+    return this.targetPath.length > 0
+  }
 }
 
 export default PathMatcher

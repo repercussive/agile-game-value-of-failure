@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { observer } from 'mobx-react-lite'
 import { PathContextProvider } from './context/PathContext'
 import { PathMatcherContextProvider } from './context/PathMatcherContext'
 import PathMatcher, { PathMatchResult } from './logic/PathMatcher'
@@ -6,7 +7,7 @@ import Path from './logic/Path'
 import GameGrid from './components/GameGrid'
 import Spacer from './components/modular/Spacer'
 
-function App() {
+const App = observer(() => {
   const [pathMatcher] = useState(new PathMatcher())
   const [path, setPath] = useState(new Path())
   const [shareCode, setShareCode] = useState('')
@@ -25,13 +26,22 @@ function App() {
     }
   }
 
+  function disablePathChecking() {
+    return !pathMatcher.hasTargetPath() || !path.isPathComplete()
+  }
+
   return (
     <>
       <h1>Agile Game WIP</h1>
 
       <PathMatcherContextProvider value={pathMatcher}>
         <Spacer mb="1rem" />
-        <button onClick={handleCheckPath}>Check</button>
+        <button
+          disabled={disablePathChecking()}
+          onClick={handleCheckPath}
+        >
+          Check
+        </button>
         <span style={{ marginLeft: '0.5rem' }}>{statusText}</span>
         <Spacer mb="1rem" />
         <PathContextProvider value={path}>
@@ -54,7 +64,7 @@ function App() {
 
     </>
   )
-}
+})
 
 function getPathMatchStatusText(result: PathMatchResult) {
   switch (result) {

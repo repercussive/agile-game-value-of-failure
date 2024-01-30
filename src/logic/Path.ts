@@ -101,6 +101,12 @@ class Path {
     return this.pathCellIndexes[positionInPath + 1]
   }
 
+  public isPathComplete() {
+    const startCellIndex = 0
+    const endCellIndex = this.gridSideLength * this.gridSideLength - 1
+    return this.isCellInPath(startCellIndex) && this.isCellInPath(endCellIndex)
+  }
+
   private areCellsAdjacent(cellIndex1: number, cellIndex2: number): boolean {
     return this.getAdjacentCellDirection(cellIndex1, cellIndex2) !== null
   }
