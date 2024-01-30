@@ -2,13 +2,17 @@ import { makeAutoObservable } from 'mobx'
 import Point from './types/Point'
 import Direction from './types/Direction'
 
-class Grid {
-  private pathCellIndexes: number[] = []
-  public sideLength = 8;
-  public totalCellCount = this.sideLength * this.sideLength
+class Path {
+  public pathCellIndexes: number[] = []
+  public gridSideLength = 7;
+  public totalCellCount = this.gridSideLength * this.gridSideLength
 
   constructor() {
     makeAutoObservable(this)
+  }
+
+  public serialize() {
+    return this.pathCellIndexes.join('-')
   }
 
   public toggleCell(cellIndex: number) {
@@ -19,6 +23,10 @@ class Grid {
     }
   }
 
+  public clear() {
+    this.pathCellIndexes = []
+  }
+  
   public isCellInPath(cellIndex: number) {
     return this.pathCellIndexes.includes(cellIndex)
   }
@@ -98,10 +106,10 @@ class Grid {
   }
 
   private cellIndexToCoordinate(cellIndex: number): Point {
-    const x = cellIndex % this.sideLength
-    const y = Math.floor(cellIndex / this.sideLength)
+    const x = cellIndex % this.gridSideLength
+    const y = Math.floor(cellIndex / this.gridSideLength)
     return { x, y }
   }
 }
 
-export default Grid
+export default Path

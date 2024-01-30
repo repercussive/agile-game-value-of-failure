@@ -1,25 +1,34 @@
 import { observer } from 'mobx-react-lite'
+import { useContext } from 'react'
+import { pathContext } from '../context/PathContext'
+import { pathMatcherContext } from '../context/PathMatcherContext'
 import useIsMouseDown from '../hooks/useIsMouseDown'
-import Grid from '../logic/Grid'
 import styles from './GridCell.module.scss'
 
 type GridCellProps = {
-  grid: Grid,
   cellIndex: number
 }
 
-const GridCell = observer(({ grid, cellIndex }: GridCellProps) => {
-  const isMouseDown = useIsMouseDown()
+const GridCell = observer(({ cellIndex }: GridCellProps) => {
+  const path = useContext(pathContext)
+  const { recordedMistakeCells, recordedCorrectCells } = useContext(pathMatcherContext)
 
+  const isMouseDown = useIsMouseDown()
+  const isMistakeCell = recordedMistakeCells.includes(cellIndex)
+  const isCorrectCell = recordedCorrectCells.includes(cellIndex)
+  
   return (
     <button
       className={styles.cell}
-      onMouseDown={() => grid.toggleCell(cellIndex)}
-      onMouseEnter={() => isMouseDown && grid.addCellToPath(cellIndex)}
-      data-is-in-path={grid.isCellInPath(cellIndex)}
-      data-is-end-point={grid.isCellEndPoint(cellIndex)}
-      data-connect-direction={grid.getAdjacentCellDirection(cellIndex, grid.nextCellIndexInPath(cellIndex))}
-    />
+      onMouseDown={() => path.toggleCell(cellIndex)}
+      onMouseEnter={() => isMouseDown && path.addCellToPath(cellIndex)}
+      data-is-in-path={path.isCellInPath(cellIndex)}
+      data-is-end-point={path.isCellEndPoint(cellIndex)}
+      data-connect-direction={path.getAdjacentCellDirection(cellIndex, path.nextCellIndexInPath(cellIndex))}
+      data-is-correct={isCorrectCell}
+    >
+      {isMistakeCell && <span className={styles.cross} />}
+    </button>
   )
 })
 

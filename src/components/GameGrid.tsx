@@ -1,22 +1,23 @@
-import { useState } from 'react'
+import { useContext } from 'react'
 import { observer } from 'mobx-react-lite'
-import Grid from '../logic/Grid'
+import { pathContext } from '../context/PathContext'
 import GridCell from './GridCell'
 import styles from './GameGrid.module.scss'
 
 const GameGrid = observer(() => {
-  const [grid] = useState(new Grid())
+  const { gridSideLength, totalCellCount } = useContext(pathContext)
 
   return (
-    <div className={styles.grid} style={{ '--grid-side-length': grid.sideLength } as React.CSSProperties}>
-      {Array.from({ length: grid.totalCellCount }).map((_, cellIndex) => (
-        <GridCell
-          key={cellIndex}
-          grid={grid}
-          cellIndex={cellIndex}
-        />
-      ))}
-    </div>
+    <>
+      <div className={styles.grid} style={{ '--grid-side-length': gridSideLength, position: 'relative' } as React.CSSProperties}>
+        {Array.from({ length: totalCellCount }).map((_, cellIndex) => (
+          <GridCell
+            key={cellIndex}
+            cellIndex={cellIndex}
+          />
+        ))}
+      </div>
+    </>
   )
 })
 

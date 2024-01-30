@@ -36,6 +36,12 @@
     pointer-events: none;
   }
 
+  &[data-is-correct=true] {
+    &::before, &::after {
+      background-color: rgb(71, 168, 47);
+    }
+  }
+
   &[data-is-in-path=true] {
     &::before, &::after {
       --connector-thickness: 5px;
@@ -78,5 +84,57 @@
       right: var(--shift-amount);
       left: auto;
     }
+  }
+
+  .cross {
+    left: 0;
+    top: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    animation: mistake-appear forwards 1s;
+
+    &::before, &::after {
+      position: absolute;
+      content: ' ';
+      background-color: rgb(225, 126, 126);
+      width: 4px;
+      top: -4px;
+      height: var(--cell-size);
+      right: calc(var(--cell-size) / 2 - 5px);
+      border-radius: 1.5px;
+      z-index: 2;
+    }
+
+    &::before {
+      transform: rotate(-45deg);
+    }
+
+    &::after {
+      transform: rotate(45deg);
+    }
+  }
+}
+
+@keyframes mistake-appear {
+  0%, 20% {
+    opacity: 1;
+  }
+
+  25%, 45% {
+    opacity: 0
+  }
+
+  50%, 70% {
+    opacity : 1
+  }
+
+  75%, 95% {
+    opacity: 0
+  }
+
+  to {
+    opacity: 1;
   }
 }
