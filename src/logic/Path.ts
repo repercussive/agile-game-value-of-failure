@@ -13,7 +13,7 @@ class Path {
 
   public get isPathComplete() {
     const startCellIndex = 0
-    const endCellIndex = this.gridSideLength * this.gridSideLength - 1
+    const endCellIndex = this.gridCellCount - 1
     return this.isCellInPath(startCellIndex) && this.isCellInPath(endCellIndex)
   }
 
@@ -66,11 +66,8 @@ class Path {
     if (isFirstCellInPath && newCellIndex !== 0) {
       return
     }
-
-    const hasPathAlreadyEnded = this.pathCellIndexes.includes(this.gridCellCount - 1)
-
-    // can't continue path after including the end cell (bottom right corner)
-    if (hasPathAlreadyEnded) {
+    
+    if (this.isPathComplete) {
       return
     }
 
